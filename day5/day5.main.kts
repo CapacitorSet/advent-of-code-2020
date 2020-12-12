@@ -8,10 +8,9 @@ fun passToSeatID(pass: String): Int =
         .replace("R", "1")
         .toInt(2)
 
-println("BBFFFFRRR")
-
 val seatIDs = File("input").readLines().map { passToSeatID(it) }.sorted()
-println("Part one: " + seatIDs[seatIDs.size - 1])
+println("Part one: " + seatIDs.last())
+
 // Search for the missing seat ID such that sID-1 and sID+1 exist
 // Reformulation: search for the (existing) seat ID such that sID+1 does not exist and sID+2 does. Then add 1.
 // Reformulation: in the array of existing sIDs, find the sID such that the next element is sID+2. Then add 1.
