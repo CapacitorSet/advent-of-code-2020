@@ -12,19 +12,15 @@ fun validPaths(diffs: List<Int>): Set<List<Int>> {
     val indices = diffs.zipWithNext()
         .mapIndexed { index, pair -> Pair(pair.first + pair.second <= 3, index) }
         .filter { it.first }.map { it.second }
-    return if (indices.isEmpty())
-        setOf(diffs)
-    else {
-         indices.map { idx ->
-            val newValue = diffs[idx] + diffs[idx + 1]
-            val newDiffs = diffs.take(idx) + newValue + diffs.drop(idx + 2)
-            validPaths(newDiffs)
-        }.reduce { a, b -> a + b } + setOf(diffs)
-    }
+    return setOf(diffs) + indices.map { idx ->
+        val newValue = diffs[idx] + diffs[idx + 1]
+        val newDiffs = diffs.take(idx) + newValue + diffs.drop(idx + 2)
+        validPaths(newDiffs)
+    }.fold(setOf()) { a, b -> a union b }
 }
 
 var result = 1L
-while (true) {
+while (diffs.isNotEmpty()) {
     // Find longest sequence not interrupted by a 3
     val subsequence = diffs.takeWhile { it != 3 }
     val paths = validPaths(subsequence)
@@ -32,8 +28,6 @@ while (true) {
     result *= numPaths
     // Drop it from the diffs, then start again
     diffs = diffs.dropWhile { it != 3 }.dropWhile { it == 3 }
-    if (diffs.isEmpty())
-        break
 }
 
 println("Part two: $result")
